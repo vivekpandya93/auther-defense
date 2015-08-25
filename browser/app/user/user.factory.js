@@ -29,7 +29,9 @@ app.factory('User', function ($http, Story) {
 			});
 		})
 		.then(function (res) {
-			user.stories = res.data;
+			user.stories = res.data.map(function (s) {
+				return new Story(s);
+			});
 			return user;
 		});
 	};
