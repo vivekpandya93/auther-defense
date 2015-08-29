@@ -29,7 +29,7 @@ function randUser () {
 		phone: chance.phone(),
 		email: emails.pop(),
 		password: chance.word(),
-		isAdmin: chance.bool()
+		isAdmin: chance.weighted([true, false], [5, 95])
 	});
 }
 

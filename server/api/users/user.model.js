@@ -49,14 +49,6 @@ var User = new mongoose.Schema({
 	}
 });
 
-User.statics.findByEmails = function (set) {
-	return this.find({emails: {$elemMatch: {$in: set}}});
-};
-
-User.statics.findByEmail = function (email) {
-	return this.findOne({emails: {$elemMatch: {$eq: email}}});
-};
-
 User.methods.getStories = function () {
 	return Story.find({author: this._id}).exec();
 };

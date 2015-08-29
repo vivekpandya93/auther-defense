@@ -16,31 +16,18 @@ app.factory('User', function ($http, Story) {
 	};
 
 	User.prototype.fetch = function () {
-		var user;
-		return $http.put(User.url, {
-			method: 'findById',
-			arguments: [this._id]
-		})
+		return $http.get(this.getUrl())
 		.then(function (res) {
-			user = new User(res.data);
-			return $http.put(Story.url, {
-				method: 'find',
-				arguments: [{author: user._id}]
-			});
-		})
-		.then(function (res) {
-			user.stories = res.data.map(function (s) {
-				return new Story(s);
+			var user = new User(res.data);
+			user.stories = user.stories.map(function (obj) {
+				return new Story(obj);
 			});
 			return user;
 		});
 	};
 
 	User.fetchAll = function () {
-		return $http.put(User.url, {
-			method: 'find',
-			arguments: []
-		})
+		return $http.get(User.url)
 		.then(function (res) {
 			return res.data.map(function (obj) {
 				return new User(obj);
@@ -49,28 +36,23 @@ app.factory('User', function ($http, Story) {
 	};
 
 	User.prototype.save = function () {
-		var method, args;
+		var verb;
+		var url;
 		if (this.isNew()) {
-			method = 'create';
-			args = [this];
+			verb = 'post';
+			url = User.url;
 		} else {
-			method = 'findByIdAndUpdate';
-			args = [this._id, this];
+			verb = 'put';
+			url = this.getUrl();
 		}
-		return $http.put(User.url, {
-			method: method,
-			arguments: args
-		})
+		return $http[verb](url, this)
 		.then(function (res) {
 			return new User(res.data);
 		});
 	};
 
 	User.prototype.destroy = function () {
-		return $http.put(User.url, {
-			method: 'findByIdAndRemove',
-			arguments: [this._id]
-		});
+		return $http.delete(this.getUrl());
 	};
 
 	return User;

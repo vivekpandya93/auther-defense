@@ -11,13 +11,11 @@ function HttpError (status, message) {
 
 HttpError.prototype = new Error;
 
-Object.defineProperty(HttpError.prototype, 'middleware', {
-	get: function () {
-		var self = this;
-		return function (req, res, next) {
-			next(self);
-		};
+HttpError.prototype.middleware = function () {
+	var self = this;
+	return function (req, res, next) {
+		next(self);
 	}
-});
+};
 
 module.exports = HttpError;

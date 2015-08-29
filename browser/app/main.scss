@@ -12,6 +12,10 @@ body {
 	);
 }
 
+a, span, h1, h2, h3, h4, h5, h6, div {
+	font-family: 'Verdana';
+}
+
 select {
 	-webkit-appearance: menulist-button;
 	background-color: transparent;
@@ -72,6 +76,10 @@ select {
 		height: 100%;
 		vertical-align: middle;
 	}
+}
+
+.text-inverted {
+	color: #aaa;
 }
 
 .inverted {

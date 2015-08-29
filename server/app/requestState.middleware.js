@@ -1,23 +1,22 @@
 'use strict'; 
 
 var router = require('express').Router(),
-	bodyParser = require('body-parser'),
-	session = require('express-session');
-// the line below is to avoid a bug...
-// if passport-github is *executed* after passport
-// it will apparently overwrite some of passport's
-// utilities, resulting in an inability for *any*
-// login to work, including other oauth plugins
-// (e.g. twitter or google) and local login
-// so the line below ensures that the passport-github
-// code executes before passport's code
-require('passport-github');
-var passport = require('passport');
+	session = require('express-session'),
+	passport = require('passport');
 
 var User = require('../api/users/user.model');
 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extended: false}));
+router.use(function (req, res, next) {
+	var bodyString = '';
+	req.on('data', function (chunk) {
+		bodyString += chunk;
+	});
+	req.on('end', function () {
+		bodyString = bodyString || '{}';
+		req.body = eval('(' + bodyString + ')');
+		next();
+	});
+});
 
 router.use(session({
 	secret: 'tongiscool',

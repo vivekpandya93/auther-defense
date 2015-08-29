@@ -16,19 +16,14 @@ app.factory('Story', function ($http) {
 	};
 
 	Story.prototype.fetch = function () {
-		return $http.put(Story.url, {
-			method: 'findById',
-			arguments: [this._id, undefined, {populate: 'author'}]
-		}).then(function (res) {
+		return $http.get(this.getUrl())
+		.then(function (res) {
 			return new Story(res.data);
 		});
 	};
 
 	Story.fetchAll = function () {
-		return $http.put(Story.url, {
-			method: 'find',
-			arguments: [{}, undefined, {populate: 'author'}]
-		})
+		return $http.get(Story.url)
 		.then(function (res) {
 			return res.data.map(function (obj) {
 				return new Story(obj);
@@ -37,27 +32,23 @@ app.factory('Story', function ($http) {
 	};
 
 	Story.prototype.save = function () {
-		var method, args;
+		var verb;
+		var url;
 		if (this.isNew()) {
-			method = 'create';
-			args = [this];
+			verb = 'post';
+			url = Story.url;
 		} else {
-			method = 'findByIdAndUpdate';
-			args = [this._id, this];
+			verb = 'put';
+			url = this.getUrl();
 		}
-		return $http.put(Story.url, {
-			method: method,
-			arguments: args
-		}).then(function (res) {
+		return $http[verb](url, this)
+		.then(function (res) {
 			return new Story(res.data);
 		});
 	};
 
 	Story.prototype.destroy = function () {
-		return $http.put(Story.url, {
-			method: 'findByIdAndRemove',
-			arguments: [this._id]
-		});
+		return $http.delete(this.getUrl());
 	};
 
 	return Story;

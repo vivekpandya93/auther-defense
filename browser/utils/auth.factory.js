@@ -9,7 +9,7 @@ app.factory('Auth', function ($http, $rootScope, User) {
 		return !!me.isAdmin;
 	};
 	$rootScope.isMe = function (user) {
-		return !!user && (me._id == user._id || me ==  user);
+		return !!user && (me._id == user._id || me == user);
 	};
 	function toData (response) {
 		return response.data;
@@ -34,7 +34,7 @@ app.factory('Auth', function ($http, $rootScope, User) {
 			.then(setMe);
 		},
 		logout: function () {
-			return $http.delete('/auth/session')
+			return $http.delete('/auth/me')
 			.then(removeMe);
 		},
 		refreshMe: function () {

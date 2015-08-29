@@ -6,10 +6,7 @@ var HttpError = require('../utils/HttpError');
 var User = require('../api/users/user.model');
 
 router.post('/login', function (req, res, next) {
-	User.findOne({
-		email: req.body.email,
-		password: req.body.password
-	}).exec()
+	User.findOne(req.body).exec()
 	.then(function (user) {
 		if (!user) throw HttpError(401);
 		req.login(user, function () {
@@ -29,13 +26,13 @@ router.post('/signup', function (req, res, next) {
 	.then(null, next);
 });
 
-router.delete('/session', function (req, res, next) {
-	req.logout();
-	res.status(204).end();
-});
-
 router.get('/me', function (req, res, next) {
 	res.json(req.user);
+});
+
+router.delete('/me', function (req, res, next) {
+	req.logout();
+	res.status(204).end();
 });
 
 router.use('/google', require('./google.oauth'));
