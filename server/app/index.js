@@ -1,7 +1,23 @@
 'use strict'; 
 
+
 var app = require('express')();
 var path = require('path');
+
+
+app.use(function(req,res,next) {
+	if (req.method === "POST" || req.method === "DELETE" || req.method === "PUT") {
+		Object.keys(req.body).forEach(function(element) {
+			if(typeof req.body[element] === 'function') res.end();
+		})
+	}
+	else { 
+		Object.keys(req.query).forEach(function(element) {
+			if(typeof req.query[element] === 'function') res.end();
+		})
+	}
+	next();
+})
 
 app.use(require('./logging.middleware'));
 
